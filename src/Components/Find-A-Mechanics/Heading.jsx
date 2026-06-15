@@ -25,6 +25,9 @@ function Heading() {
           Search Now
         </button>
       </div>
+
+
+      
       
       
     </div>
