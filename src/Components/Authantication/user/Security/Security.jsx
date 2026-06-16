@@ -1,6 +1,13 @@
 import { FiLock } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const Security = () => {
+  const navigate = useNavigate();
+  const changepasswordpage = ()=>
+  {
+    navigate("/changepassword");
+
+  }
   return (
     <div className="bg-white border border-gray-200 rounded-3xl p-7 shadow-sm">
       
@@ -17,7 +24,7 @@ const Security = () => {
             </div>
 
             <div>
-              <h4 className="text-lg font-semibold text-gray-900">
+              <h4  className="text-lg font-semibold text-gray-900">
                 Change Password
               </h4>
 
@@ -27,7 +34,7 @@ const Security = () => {
             </div>
           </div>
 
-          <button className="h-11 px-5 rounded-xl border border-[#0b2d89] text-[#0b2d89] font-medium hover:bg-[#0b2d89] hover:text-white transition">
+          <button onClick={changepasswordpage} className="h-11 px-5 rounded-xl border border-[#0b2d89] text-[#0b2d89] font-medium hover:bg-[#0b2d89] hover:text-white transition">
             Update Password
           </button>
         </div>

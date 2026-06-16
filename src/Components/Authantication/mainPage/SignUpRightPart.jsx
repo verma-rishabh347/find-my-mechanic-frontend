@@ -1,11 +1,43 @@
 import { useReducer } from 'react';
 import {  NavLink } from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
+import api from '../../../data/axios/Axios';
 
 
 
 const SignUpRightPart = () => {
   const navigate = useNavigate();
+  const handleapi = async ()=>
+  {
+    try{
+      const res= await api.post("/Auth/SignUp",{name: state.name,
+
+  email: state.email,
+
+  phone: state.phone,
+
+  password: state.password,});
+      console.log(res.data);
+      localStorage.setItem("email",state.email);
+localStorage.setItem("verifytype","signup");
+      if (res.data.isSuccesed) {
+  localStorage.setItem("email", state.email);
+  navigate("/authantication/verifyemail");
+}
+
+    }
+
+     catch (err) {
+
+    console.log(err.response?.data);
+     }
+
+    
+
+
+
+  }
+ 
 
   const initialState = {
   name: "",
@@ -68,8 +100,7 @@ function reducer(state, action) {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,10}$/;
+  const passwordRegex =/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/;
 
   if (!state.name.trim()) {
     errors.name = "Name is required";
@@ -91,7 +122,7 @@ function reducer(state, action) {
     errors.password = "Password is required";
   } else if (!passwordRegex.test(state.password)) {
     errors.password =
-      "8-10 chars, uppercase, lowercase, number & special char required";
+      "8-20 chars, uppercase, lowercase, number & special char required";
   }
 
   if (Object.keys(errors).length > 0) {
@@ -104,9 +135,10 @@ function reducer(state, action) {
 
   dispatch({ type: "CLEAR_ERRORS" });
 
-localStorage.setItem("setup", "signup");
+  handleapi();
 
-navigate("/authantication/verifyemail");
+
+
 };
 
 

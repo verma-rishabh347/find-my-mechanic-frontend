@@ -45,6 +45,7 @@ import Services from './Components/BusinessProfile/Services'
 import StationSettings from './Components/BusinessProfile/SatationSettings'
 import ProtectedRoute from './ProtectedRoute'
 import BookigConfirm from './Components/Find-A-Mechanics/ServiceCenterProfile/BookServices/BookigConfirm'
+import ChangePassword from './Components/Authantication/user/ChangePassword'
 
 function App() {
  
@@ -60,11 +61,12 @@ function App() {
 
 
        
+        
       <Route path="/authantication" element={<AuthanticationPage />}   >
-        <Route path="signup" element={<SignUp/>}   />
+      <Route path="signup" element={<SignUp/>}   />
+        <Route path="verifyemail" element={<VerifyEmail/>}   />
         <Route path="signin" element={<SignIn/>}   />
         <Route path="passwordreset" element={<ForgotPassword/>}   />
-        <Route path="verifyemail" element={<VerifyEmail/>}   />
         <Route path="createpassword" element={<CreatePassword/>}   />
         <Route path="resetsuccess" element={<ResetSuccess/>}   />
         <Route path="setupuserprofile" element={<SetupUserProfile/>}   />
@@ -79,6 +81,10 @@ function App() {
 
 
       <Route  element={<ProtectedRoute/>} >
+
+
+
+        <Route path='changepassword' element={<ChangePassword/>}   />
 
 
 

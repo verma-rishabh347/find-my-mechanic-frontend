@@ -1,17 +1,36 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../../data/axios/Axios";
+import { useState } from "react";
 
 const VerifyEmail = () => {
-  const handlego=()=>{
-    if(localStorage.getItem("setup")==="signup"){
-      return "/authantication/SetupUserProfile"
-    }else if (localStorage.getItem("setup")==="signin"){
-      return "/authantication/createpassword"
+  const [otpCode,setotpCode] = useState("");
+  const email = localStorage.getItem("email")
+  const navigate=useNavigate();
+  const  handleapi  = async ()=>
+  {
+    try{
+      const res = await api.post("Auth/SignUpVerifyEmail",{email:email,otpCode:Number(otpCode)})
+      console.log(res.data);
+
+      localStorage.setItem("token",res.data.data)
+      
+      if(res.data.isSuccesed)
+      {
+        if(localStorage.getItem("verifytype")==="signup"){
+      navigate("/authantication/SetupUserProfile");
+    }else if (localStorage.getItem("verifytype")==="forgot"){
+      navigate("/authantication/createpassword");
     }
 
-    // resetsuccess
-    
+      }
+    }
+    catch(err)
+    {
+       console.log(err.response?.data);
+    }
 
   }
+  
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-12 bg-background">
       <div className="w-full max-w-[520px] bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(0,35,111,0.05)] border border-outline-variant p-6 md:p-12 text-center">
@@ -36,17 +55,19 @@ const VerifyEmail = () => {
   <input
     type="text"
     maxLength={6}
+    value={otpCode}
+    onChange={(e)=>setotpCode(e.target.value)}
     placeholder="123456"
     className="w-full h-14 px-4 text-center text-2xl font-bold border rounded-lg outline-none"
   />
 </div>
         
         <div className="space-y-6">
-          <Link to={handlego()} ><button
+          <button onClick={handleapi}  
             className="w-full bg-[#FF6B00] hover:bg-[#E66000] text-white font-semibold py-4 rounded-xl shadow-md transition-all active:scale-[0.98]"
           >
             Verify Code
-          </button></Link>
+          </button>
 
           <div className="flex flex-col items-center gap-2">
             <p className="text-sm text-on-surface-variant">

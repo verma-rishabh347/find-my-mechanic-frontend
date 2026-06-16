@@ -1,4 +1,4 @@
-import Notification2 from "./Notificationpart/Notification2";
+
 import Security from "./Security/Security";
 import { FiMapPin } from "react-icons/fi";
 
@@ -14,7 +14,7 @@ const WebsiteSettings = () => {
           Customize your experience and manage security preferences.
         </p>
       </div>
-      <Notification2 />
+
       <Security />
       <div className="bg-white border border-gray-200 rounded-3xl p-7 shadow-sm">
         

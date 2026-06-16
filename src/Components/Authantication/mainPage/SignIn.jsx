@@ -1,19 +1,50 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { Wrench } from "lucide-react";
 import { useState } from 'react';
+import api from '../../../data/axios/Axios';
 
 function SignIn() {
+  const handleapi = async () => {
+
+  try {
+
+    const res = await api.post("/Auth/SignIn", {
+
+      email,
+
+      password,
+
+    });
+
+    console.log(res.data);
+
+    localStorage.setItem(
+
+      "token",
+      res.data.data
+
+    );
+    
+
+
+    navigate("/");
+
+  } catch (err) {
+
+    console.log(err.response?.data);
+
+  }
+
+};
   const navigate = useNavigate();
   const [email,setemail] = useState("");
   const [password,setpassword] = useState("");
   const [emailError, setEmailError] = useState("");
 const [passwordError, setPasswordError] = useState("");
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordRegex =/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,10}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,20}$/;
 
   const onlogin = () => {
-  setEmailError("");
-  setPasswordError("");
 
   if (!email) {
     setEmailError("Email is required");
@@ -37,15 +68,9 @@ const [passwordError, setPasswordError] = useState("");
     return;
   }
 
-  localStorage.setItem(
-    "user",
-    JSON.stringify({
-      id: 1,
-      role: "User",
-    })
-  );
+  handleapi();
 
-  navigate("/");
+
 };
 
 

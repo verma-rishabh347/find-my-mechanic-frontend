@@ -3,13 +3,18 @@ import {
   HiOutlineLocationMarker,
 } from "react-icons/hi";
 import { useReducer } from "react";
+import api from "../../../data/axios/Axios";
+import { useNavigate } from "react-router-dom";
+
+
+  
 
 const initialState = {
   companyName: "",
   model: "",
   vehicleNumber: "",
   year: "",
-  vehicleType: "",
+  vehicleType: 0,
   streetAddress: "",
   city: "",
   state: "",
@@ -20,7 +25,7 @@ const initialState = {
     model: "",
     vehicleNumber: "",
     year: "",
-    vehicleType: "",
+    vehicleType: 0,
     streetAddress: "",
     city: "",
     state: "",
@@ -51,7 +56,7 @@ function reducer(state, action) {
     case "CLEAR_ERRORS":
       return {
         ...state,
-        errors: initialState.errors,
+        errors: {...initialState.errors},
       };
 
     default:
@@ -59,10 +64,40 @@ function reducer(state, action) {
   }
 }
 const SetupUserProfile = () => {
+  const navigate=useNavigate();
+
+
+
+const handleapi = async () =>
+{
+
+  const res = await api.post("/Auth/UserAddressAndvehicleSetUp",{ vehicleNumber: state.vehicleNumber,
+
+  brand: state.companyName,
+
+  model: state.model,
+
+  manufactureYear: Number(state.year),
+
+  vehicleType: state.vehicleType,
+
+  landmark: state.streetAddress,
+
+  city: state.city,
+
+  state: state.state,
+
+  pinCode: state.zip,})
+  console.log(res.data);
+  if(res.data.isSuccesed)
+      {
+        navigate('/')
+      }
+}
   
 
 const [state, dispatch] = useReducer(reducer, initialState);
-const handleSubmit = () => {
+const handleSubmit = async () => {
   const errors = {};
 
   if (!state.companyName.trim()) {
@@ -105,6 +140,7 @@ const handleSubmit = () => {
   if (!state.zip.trim()) {
     errors.zip = "ZIP code is required";
   }
+  
 
   if (Object.keys(errors).length > 0) {
     dispatch({
@@ -114,24 +150,11 @@ const handleSubmit = () => {
     return;
   }
 
+  handleapi();
   dispatch({ type: "CLEAR_ERRORS" });
 
-  console.log(state);
 
-  localStorage.setItem(
-    "userProfile",
-    JSON.stringify({
-      companyName: state.companyName,
-      model: state.model,
-      vehicleNumber: state.vehicleNumber,
-      year: state.year,
-      vehicleType: state.vehicleType,
-      streetAddress: state.streetAddress,
-      city: state.city,
-      state: state.state,
-      zip: state.zip,
-    })
-  );
+
 };
   return (
     <div className="bg-[#f5f6fa] min-h-screen py-10 px-4">
@@ -271,11 +294,11 @@ const handleSubmit = () => {
     dispatch({
       type: "CHANGE_FIELD",
       field: "vehicleType",
-      value: "Car",
+      value: 2,
     })
   }
   className={`border rounded-xl h-14 px-5 ${
-    state.vehicleType === "Car"
+    state.vehicleType === 2
       ? "bg-blue-900 text-white"
       : ""
   }`}
@@ -289,11 +312,11 @@ const handleSubmit = () => {
     dispatch({
       type: "CHANGE_FIELD",
       field: "vehicleType",
-      value: "Bike",
+      value: 1,
     })
   }
   className={`border rounded-xl h-14 px-5 ${
-    state.vehicleType === "Bike"
+    state.vehicleType === 1
       ? "bg-blue-900 text-white"
       : ""
   }`}

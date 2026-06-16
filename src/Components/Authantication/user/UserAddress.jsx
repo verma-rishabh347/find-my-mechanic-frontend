@@ -10,8 +10,6 @@ const UserAddress = () => {
 
         <div className='grid  mt-10 gap-10 grid-cols-2'>
             <UserAddressComponent/>
-            <UserAddressComponent/>
-            <UserAddressComponent/>
             <UserAddressEmpty/>
         </div>
     </div>
