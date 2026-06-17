@@ -1,8 +1,36 @@
+import { useEffect, useState } from "react";
 import { FiArrowLeft, FiStar } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import api from "../../../data/axios/Axios";
 
 export default function UserAddressCreate() {
     const navigate = useNavigate();
+    const handleapi = async () =>
+    {
+      try
+      {
+        const res =await api.post("/UserAddress",{landmark:landmark,city:city,state:state,pincode:pincode});
+        console.log(res.data.data)
+        setcity("");
+        setstate("");
+        setlandmark("");
+        setpincode("");
+        navigate("/profilepage/useraddress");
+
+      }
+      catch(err)
+      {
+        console.log(err.type);
+
+      }
+
+    }
+    const [landmark,setlandmark]=useState("")
+    const[city,setcity]=useState("")
+    const[state,setstate]=useState("")
+    const[pincode,setpincode]=useState("")
+    const[defaultaddress,setdefaultaddress]=useState(false)
+   
   return (
     <div className="w-full px-8 py-6">
       
@@ -32,6 +60,9 @@ export default function UserAddressCreate() {
 
           <input
             type="text"
+            value={landmark}
+            onChange={(e)=>setlandmark(e.target.value)}
+     
             placeholder="123 Mechanic Ave"
             className="w-full h-14 px-5 border border-gray-300 rounded-xl outline-none focus:border-blue-900"
           />
@@ -46,6 +77,9 @@ export default function UserAddressCreate() {
 
             <input
               type="text"
+              value={city}
+            onChange={(e)=>setcity(e.target.value)}
+          
               placeholder="Detroit"
               className="w-full h-14 px-5 border border-gray-300 rounded-xl outline-none focus:border-blue-900"
             />
@@ -53,16 +87,14 @@ export default function UserAddressCreate() {
 
           <div>
             <label className="block mb-3 font-semibold text-gray-700">
-              State / Province
+              State 
             </label>
 
-            <select className="w-full h-14 px-5 border border-gray-300 rounded-xl outline-none focus:border-blue-900">
-              <option>Select state</option>
-              <option>Haryana</option>
-              <option>Punjab</option>
-              <option>Delhi</option>
-              <option>Rajasthan</option>
-            </select>
+            <input type="text"  value={state}
+            onChange={(e)=>setstate(e.target.value)}
+             className="w-full h-14 px-5 border border-gray-300 rounded-xl outline-none focus:border-blue-900"/>
+              
+        
           </div>
         </div>
 
@@ -70,11 +102,14 @@ export default function UserAddressCreate() {
         <div className="grid grid-cols-2 gap-8 mt-7">
           <div>
             <label className="block mb-3 font-semibold text-gray-700">
-              ZIP / Postal Code
+              Pin Code / Postal Code
             </label>
 
             <input
               type="text"
+              value={pincode}
+            onChange={(e)=>setpincode(e.target.value)}
+        
               placeholder="48201"
               className="w-full h-14 px-5 border border-gray-300 rounded-xl outline-none focus:border-blue-900"
             />
@@ -111,7 +146,7 @@ export default function UserAddressCreate() {
 
         {/* Buttons */}
         <div className="grid grid-cols-2 gap-5 mt-12">
-          <button className="h-14 rounded-xl bg-blue-900 text-white font-semibold hover:bg-blue-800 transition">
+          <button onClick={handleapi} className="h-14 rounded-xl bg-blue-900 text-white font-semibold hover:bg-blue-800 transition">
             Save Address
           </button>
 

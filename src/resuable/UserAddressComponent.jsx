@@ -1,9 +1,39 @@
+import { useEffect, useState } from "react";
 import { FiHome, FiEdit2, FiTrash2 } from "react-icons/fi";
 import { FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
-export default function UserAddressComponent() {
-  return (
+export default function UserAddressComponent({
+
+address,  onEdit,
+
+  onDelete
+
+}) {
+  const [landmark,setlandmark] = useState("")
+  const [city,setcity] = useState("")
+  const [state,setstate] = useState("")
+  const [pincode,setpincode] = useState("")
+  const [isEditing, setIsEditing] = useState(false);
+
+
+  useEffect(() => {
+
+  if (address) {
+
+    setlandmark(address.landmark);
+
+    setcity(address.city);
+
+    setstate(address.state);
+
+    setpincode(address.pinCode);
+
+  }
+
+}, [address]);
+;  return (
+
     <div className="w-[420px]  min-h-[320px] rounded-2xl border border-gray-200 bg-white p-8 shadow-sm hover:shadow-md transition-all duration-300">
       
       {/* Header */}
@@ -18,17 +48,16 @@ export default function UserAddressComponent() {
       </div>
 
       {/* Address Info */}
-      <div className="mt-6">
-        <h3 className="text-2xl font-bold text-gray-900">
-          Address No:
-        </h3>
+      <div className="mt-6 ">
+        
 
         <p className="mt-4 text-gray-600">
-          123 Mechanics Way, Suite 400
+          <span className="font-bold">Landmark: </span><input disabled={!isEditing} value={landmark} onChange={(e)=>{setlandmark(e.target.value)}} type="text" />
         </p>
 
         <p className="text-gray-600">
-          Detroit, MI 48201
+          <span className="font-bold">City:  </span> <input value={city} onChange={(e)=>{setcity(e.target.value)}} disabled={!isEditing} type="text" />  <br />
+          <span className="font-bold">State:  </span>   <input type="text" value={state} onChange={(e)=>{setstate(e.target.value)}} disabled={!isEditing} /> <br /> <span className="font-bold">Pincode:</span>  <input value={pincode} onChange={(e)=>{setpincode(e.target.value)}} disabled={!isEditing} type="text" />
         </p>
 
         
@@ -39,12 +68,24 @@ export default function UserAddressComponent() {
 
       {/* Actions */}
       <div className="flex items-center justify-center gap-16">
-        <button className="flex items-center gap-2 text-gray-700 hover:text-black font-medium">
-          <FiEdit2 size={18} />
-          Edit
+        <button   onClick={() => {
+  if (isEditing) {
+    onEdit({
+      id: address.id,
+      landmark,
+      city,
+      state,
+      pinCode: pincode
+    });
+  }
+
+  setIsEditing(!isEditing);
+}}className="flex items-center gap-2 text-gray-700 hover:text-black font-medium">
+          {isEditing ? "" : <FiEdit2 size={18} />}
+           {isEditing ? "Save" : "Edit"}
         </button>
 
-        <button className="flex items-center gap-2 text-red-600 hover:text-red-700 font-medium">
+        <button onClick={()=>{onDelete(address.id)}} className="flex items-center gap-2 text-red-600 hover:text-red-700 font-medium">
           <FiTrash2 size={18} />
           Remove
         </button>

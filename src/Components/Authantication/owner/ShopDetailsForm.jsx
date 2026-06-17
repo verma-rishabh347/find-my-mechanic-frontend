@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   FiInfo,
   FiBriefcase,
@@ -7,6 +8,29 @@ import {
 import { useNavigate } from "react-router-dom";
 
 export default function ShopDetailsForm() {
+  const [shopName, setShopName] = useState("");
+
+const [phoneNumber, setPhoneNumber] = useState("");
+
+const [description, setDescription] = useState("");
+
+const [gstNumber, setGstNumber] = useState("");
+
+const [bankAccountNumber, setBankAccountNumber] = useState("");
+
+const [email, setemail] = useState("");
+
+const [experienceYear, setExperienceYear] = useState("");
+
+const [totalMechanics, setTotalMechanics] = useState("");
+
+const [shopPhoto, setShopPhoto] = useState(null);
+
+const [openTime, setOpenTime] = useState("");
+
+const [closeTime, setCloseTime] = useState("");
+
+
     const navigate = useNavigate();
 
     const onnextpage = () =>
@@ -110,6 +134,17 @@ export default function ShopDetailsForm() {
             <input
               type="text"
               placeholder="e.g. 9876543210123"
+              className="w-full h-12 mt-2 px-4 border rounded-xl"
+            />
+          </div>
+          <div className="mt-6">
+            <label className="font-medium">
+              Email Id
+            </label>
+
+            <input
+              type="text"
+              placeholder="e.g. rishabh@gmail.com"
               className="w-full h-12 mt-2 px-4 border rounded-xl"
             />
           </div>
