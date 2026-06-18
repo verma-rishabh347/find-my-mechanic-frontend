@@ -1,13 +1,33 @@
 import { FiArrowLeft } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import api from "../../../data/axios/Axios";
+import { useState } from "react";
 
 export default function ShopAddressForm() {
     const navigate = useNavigate();
-    const onnextpage =()=>
-    {
-        navigate("/askvehicletype")
-        
+    const [landmark, setLandmark] = useState("");
+const [pinCode, setPinCode] = useState("");
+const [city, setCity] = useState("");
+const [state, setState] = useState("");
+    
+    const handleApi = async () => {
+  try {
+    const res = await api.post("/OwnerSetup/StationAddress", {
+      landmark,
+      pinCode,
+      city,
+      state,
+    });
+
+    console.log(res.data);
+
+    if (res.data.succeeded) {
+      navigate("/askvehicletype");
     }
+  } catch (error) {
+    console.log(error);
+  }
+};
   return (
     <div className="w-full px-8 py-6">
       
@@ -37,11 +57,13 @@ export default function ShopAddressForm() {
             Full Street Address
           </label>
 
-          <input
-            type="text"
-            placeholder="123 Mechanic Ave"
-            className="w-full h-14 px-5 border border-gray-300 rounded-xl outline-none focus:border-blue-900"
-          />
+         <input
+  type="text"
+  value={landmark}
+  onChange={(e) => setLandmark(e.target.value)}
+  placeholder="123 Mechanic Ave"
+  className="w-full h-14 px-5 border border-gray-300 rounded-xl outline-none focus:border-blue-900"
+/>
         </div>
 
         {/* City + State */}
@@ -54,10 +76,12 @@ export default function ShopAddressForm() {
             </label>
 
             <input
-              type="text"
-              placeholder="48201"
-              className="w-full h-14 px-5 border border-gray-300 rounded-xl outline-none focus:border-blue-900"
-            />
+  type="text"
+  value={pinCode}
+  onChange={(e) => setPinCode(e.target.value)}
+  placeholder="48201"
+  className="w-full h-14 px-5 border border-gray-300 rounded-xl outline-none focus:border-blue-900"
+/>
           </div>
 
           <div>
@@ -66,10 +90,12 @@ export default function ShopAddressForm() {
             </label>
 
             <input
-              type="text"
-              placeholder="Detroit"
-              className="w-full h-14 px-5 border border-gray-300 rounded-xl outline-none focus:border-blue-900"
-            />
+  type="text"
+  value={city}
+  onChange={(e) => setCity(e.target.value)}
+  placeholder="Detroit"
+  className="w-full h-14 px-5 border border-gray-300 rounded-xl outline-none focus:border-blue-900"
+/>
           </div>
 
           <div>
@@ -77,13 +103,17 @@ export default function ShopAddressForm() {
               State / Province
             </label>
 
-            <select className="w-full h-14 px-5 border border-gray-300 rounded-xl outline-none focus:border-blue-900">
-              <option>Select state</option>
-              <option>Haryana</option>
-              <option>Punjab</option>
-              <option>Delhi</option>
-              <option>Rajasthan</option>
-            </select>
+           <select
+  value={state}
+  onChange={(e) => setState(e.target.value)}
+  className="w-full h-14 px-5 border border-gray-300 rounded-xl outline-none focus:border-blue-900"
+>
+  <option value="">Select state</option>
+  <option value="Haryana">Haryana</option>
+  <option value="Punjab">Punjab</option>
+  <option value="Delhi">Delhi</option>
+  <option value="Rajasthan">Rajasthan</option>
+</select>
           </div>
         </div>
 
@@ -101,9 +131,12 @@ export default function ShopAddressForm() {
 
         {/* Buttons */}
         <div className="grid grid-cols-2 gap-5 mt-12">
-          <button onClick={onnextpage} className="h-14 rounded-xl bg-blue-900 text-white font-semibold hover:bg-blue-800 transition">
-            Save Address
-          </button>
+         <button
+  onClick={handleApi}
+  className="h-14 rounded-xl bg-blue-900 text-white font-semibold hover:bg-blue-800 transition"
+>
+  Save Address
+</button>
 
           <button className="h-14 rounded-xl border border-blue-900 text-blue-900 font-semibold hover:bg-blue-50 transition">
             Cancel

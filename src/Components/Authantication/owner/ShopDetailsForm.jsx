@@ -6,38 +6,55 @@ import {
   FiClock,
 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import api from "../../../data/axios/Axios";
 
 export default function ShopDetailsForm() {
-  const [shopName, setShopName] = useState("");
+    const navigate = useNavigate();
 
+    
+
+const handleapi = async () => {
+  try {
+    const res = await api.post("/OwnerSetup/StationDetails", {
+      name: shopName,
+      phone: phoneNumber,
+      description: description,
+      gstNumber: gstNumber,
+      bankAccountNumber: bankAccountNumber,
+      email: email,
+      experienceYear: Number(experienceYear),
+      photo: photo,
+      openTime: openTime,
+      closeTime: closeTime,
+    });
+
+    console.log(res.data);
+  if (res.data.succeeded) {
+
+      navigate("/shopaddressform");
+  }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
+
+
+ const [shopName, setShopName] = useState("");
 const [phoneNumber, setPhoneNumber] = useState("");
-
 const [description, setDescription] = useState("");
-
 const [gstNumber, setGstNumber] = useState("");
-
 const [bankAccountNumber, setBankAccountNumber] = useState("");
-
-const [email, setemail] = useState("");
-
+const [email, setEmail] = useState("");
 const [experienceYear, setExperienceYear] = useState("");
-
-const [totalMechanics, setTotalMechanics] = useState("");
-
-const [shopPhoto, setShopPhoto] = useState(null);
-
+const [photo, setPhoto] = useState("");
 const [openTime, setOpenTime] = useState("");
-
 const [closeTime, setCloseTime] = useState("");
 
 
-    const navigate = useNavigate();
 
-    const onnextpage = () =>
-    {
-        navigate("/shopaddressform")
-
-    }
   return (
     <div className="w-full p-8">
 
@@ -72,11 +89,13 @@ const [closeTime, setCloseTime] = useState("");
                 Shop Name
               </label>
 
-              <input
-                type="text"
-                placeholder="e.g. Precision Motors"
-                className="w-full h-12 mt-2 px-4 border rounded-xl"
-              />
+             <input
+  type="text"
+  value={shopName}
+  onChange={(e) => setShopName(e.target.value)}
+  placeholder="e.g. Precision Motors"
+  className="w-full h-12 mt-2 px-4 border rounded-xl"
+/>
             </div>
 
             <div>
@@ -84,11 +103,13 @@ const [closeTime, setCloseTime] = useState("");
                 Phone Number
               </label>
 
-              <input
-                type="text"
-                placeholder="e.g. 1234567890"
-                className="w-full h-12 mt-2 px-4 border rounded-xl"
-              />
+             <input
+  type="text"
+  value={phoneNumber}
+  onChange={(e) => setPhoneNumber(e.target.value)}
+  placeholder="e.g. 1234567890"
+  className="w-full h-12 mt-2 px-4 border rounded-xl"
+/>
             </div>
           </div>
 
@@ -97,11 +118,13 @@ const [closeTime, setCloseTime] = useState("");
               Description
             </label>
 
-            <textarea
-              rows={5}
-              placeholder="Briefly describe your services and specialization..."
-              className="w-full mt-2 p-4 border rounded-xl resize-none"
-            />
+           <textarea
+  rows={5}
+  value={description}
+  onChange={(e) => setDescription(e.target.value)}
+  placeholder="Briefly describe your services and specialization..."
+  className="w-full mt-2 p-4 border rounded-xl resize-none"
+/>
           </div>
         </div>
 
@@ -120,10 +143,12 @@ const [closeTime, setCloseTime] = useState("");
             </label>
 
             <input
-              type="text"
-              placeholder="22AAAAA0000A1Z5"
-              className="w-full h-12 mt-2 px-4 border rounded-xl"
-            />
+  type="text"
+  value={gstNumber}
+  onChange={(e) => setGstNumber(e.target.value)}
+  placeholder="22AAAAA0000A1Z5"
+  className="w-full h-12 mt-2 px-4 border rounded-xl"
+/>
           </div>
 
           <div className="mt-6">
@@ -131,11 +156,13 @@ const [closeTime, setCloseTime] = useState("");
               Bank Account Number
             </label>
 
-            <input
-              type="text"
-              placeholder="e.g. 9876543210123"
-              className="w-full h-12 mt-2 px-4 border rounded-xl"
-            />
+           <input
+  type="text"
+  value={bankAccountNumber}
+  onChange={(e) => setBankAccountNumber(e.target.value)}
+  placeholder="e.g. 9876543210123"
+  className="w-full h-12 mt-2 px-4 border rounded-xl"
+/>
           </div>
           <div className="mt-6">
             <label className="font-medium">
@@ -143,10 +170,12 @@ const [closeTime, setCloseTime] = useState("");
             </label>
 
             <input
-              type="text"
-              placeholder="e.g. rishabh@gmail.com"
-              className="w-full h-12 mt-2 px-4 border rounded-xl"
-            />
+  type="email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  placeholder="e.g. rishabh@gmail.com"
+  className="w-full h-12 mt-2 px-4 border rounded-xl"
+/>
           </div>
         </div>
       </div>
@@ -168,24 +197,16 @@ const [closeTime, setCloseTime] = useState("");
               Years of Experience
             </label>
 
-            <input
-              type="number"
-              placeholder="e.g. 15"
-              className="w-full h-12 mt-2 px-4 border rounded-xl"
-            />
+           <input
+  type="number"
+  value={experienceYear}
+  onChange={(e) => setExperienceYear(e.target.value)}
+  placeholder="e.g. 15"
+  className="w-full h-12 mt-2 px-4 border rounded-xl"
+/>
           </div>
 
-          <div className="mt-6">
-            <label className="font-medium">
-              Total Mechanics
-            </label>
-
-            <input
-              type="number"
-              placeholder="e.g. 5"
-              className="w-full h-12 mt-2 px-4 border rounded-xl"
-            />
-          </div>
+          
         </div>
 
         {/* Workshop Visuals */}
@@ -199,12 +220,16 @@ const [closeTime, setCloseTime] = useState("");
 
           <div className="h-64 border-2 border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center">
             <button className="px-6 py-3 bg-blue-900 text-white rounded-xl">
-              Replace Shop Front Photo
+              Shop Front Photo
             </button>
 
-            <p className="mt-4 text-slate-500">
-              Drop your file or click to browse
-            </p>
+           <input
+  type="text"
+  value={photo}
+  onChange={(e) => setPhoto(e.target.value)}
+  placeholder="Photo URL"
+  className="w-full h-12 mt-2 px-4 border rounded-xl"
+/>
           </div>
         </div>
       </div>
@@ -224,10 +249,12 @@ const [closeTime, setCloseTime] = useState("");
               General Opening Time
             </label>
 
-            <input
-              type="time"
-              className="w-full h-12 mt-2 px-4 border rounded-xl"
-            />
+           <input
+  type="time"
+  value={openTime}
+  onChange={(e) => setOpenTime(e.target.value)}
+  className="w-full h-12 mt-2 px-4 border rounded-xl"
+/>
           </div>
 
           <div>
@@ -236,9 +263,11 @@ const [closeTime, setCloseTime] = useState("");
             </label>
 
             <input
-              type="time"
-              className="w-full h-12 mt-2 px-4 border rounded-xl"
-            />
+  type="time"
+  value={closeTime}
+  onChange={(e) => setCloseTime(e.target.value)}
+  className="w-full h-12 mt-2 px-4 border rounded-xl"
+/>
           </div>
         </div>
       </div>
@@ -247,9 +276,12 @@ const [closeTime, setCloseTime] = useState("");
       <div className="flex justify-end gap-4 mt-8">
         
 
-        <button onClick={onnextpage} className="px-8 py-3 bg-blue-900 text-white rounded-xl">
-          Continue →
-        </button>
+       <button
+  onClick={handleapi}
+  className="px-8 py-3 bg-blue-900 text-white rounded-xl"
+>
+  Continue →
+</button>
       </div>
     </div>
   );

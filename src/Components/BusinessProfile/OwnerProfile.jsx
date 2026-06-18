@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import api from "../../data/axios/Axios";
 import {
   FiCamera,
   FiEdit2,
@@ -13,16 +14,16 @@ import {
 } from "react-icons/fi";
 
 const initialOwner = {
-  fullName: "Rishabh Verma",
-  email: "rishabhverma241204@gmail.com",
-  phone: "+91 7206345679",
-  dateOfBirth: "24-12-2004",
+  fullName: "",
+  email: "",
+  phone: "",
+  dateOfBirth: "",
   gender: "Male",
-  addressLine1: "kamiri road,Hisar",
-  city: "Hisar",
-  state: "Haryana",
-  postalCode: "125001",
-  country: "India",
+  addressLine1: "",
+  city: "",
+  state: "",
+  postalCode: "",
+  country: "India"
 };
 
 function Field({ label, value, onChange, disabled, type = "text", placeholder }) {
@@ -44,8 +45,56 @@ function Field({ label, value, onChange, disabled, type = "text", placeholder })
 }
 
 const OwnerProfile = () => {
-  const [owner, setOwner] = useState(initialOwner);
-  const [draft, setDraft] = useState(initialOwner);
+const [owner, setOwner] = useState(initialOwner);
+
+const [draft, setDraft] = useState(initialOwner);
+
+const handleapi = async () => {
+
+  try {
+
+    const res = await api.get("/StationProfile/GetOwnerProfile");
+
+    const data = res.data.data;
+
+    setOwner({
+      fullName: data.fullName,
+      email: data.email,
+      phone: data.phone,
+      dateOfBirth: data.dateOfBirth,
+      gender: data.gender,
+      addressLine1: data.addressLine1,
+      city: data.city,
+      state: data.state,
+      postalCode: data.postalCode,
+    });
+
+    setDraft({
+      fullName: data.fullName,
+      email: data.email,
+      phone: data.phone,
+      dateOfBirth: data.dateOfBirth,
+      gender: data.gender,
+      addressLine1: data.addressLine1,
+      city: data.city,
+      state: data.state,
+      postalCode: data.postalCode,
+      country: data.country,
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+
+};
+
+useEffect(() => {
+
+  handleapi();
+
+}, []);
   const [isEditing, setIsEditing] = useState(false);
 
   const displayedOwner = isEditing ? draft : owner;
