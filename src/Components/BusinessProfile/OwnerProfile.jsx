@@ -19,11 +19,12 @@ const initialOwner = {
   phone: "",
   dateOfBirth: "",
   gender: "Male",
+  profilePhoto: "",
   addressLine1: "",
   city: "",
   state: "",
   postalCode: "",
-  country: "India"
+  country: "India",
 };
 
 function Field({ label, value, onChange, disabled, type = "text", placeholder }) {
@@ -45,9 +46,16 @@ function Field({ label, value, onChange, disabled, type = "text", placeholder })
 }
 
 const OwnerProfile = () => {
-const [owner, setOwner] = useState(initialOwner);
 
 const [draft, setDraft] = useState(initialOwner);
+
+const [owner, setOwner] = useState(initialOwner);
+
+const [loading, setLoading] = useState(false);
+
+
+
+
 
 const handleapi = async () => {
 
@@ -58,29 +66,73 @@ const handleapi = async () => {
     const data = res.data.data;
 
     setOwner({
-      fullName: data.fullName,
-      email: data.email,
-      phone: data.phone,
-      dateOfBirth: data.dateOfBirth,
-      gender: data.gender,
-      addressLine1: data.addressLine1,
-      city: data.city,
-      state: data.state,
-      postalCode: data.postalCode,
-    });
 
-    setDraft({
-      fullName: data.fullName,
-      email: data.email,
-      phone: data.phone,
-      dateOfBirth: data.dateOfBirth,
-      gender: data.gender,
-      addressLine1: data.addressLine1,
-      city: data.city,
-      state: data.state,
-      postalCode: data.postalCode,
-      country: data.country,
-    });
+  fullName: data.name,
+
+  email: data.email,
+
+  phone: data.phone,
+
+  dateOfBirth: data.dateOfBirth?.split("T")[0],
+
+  gender:
+
+    data.gender === 0
+
+      ? "Male"
+
+      : data.gender === 1
+
+      ? "Female"
+
+      : "Other",
+
+  profilePhoto: data.profilePhoto,
+
+  addressLine1: data.landmark ?? "",
+
+  city: data.city,
+
+  state: data.state,
+
+  postalCode: data.pinCode,
+   country: "India",
+
+});
+setDraft({
+
+  fullName: data.name,
+
+  email: data.email,
+
+  phone: data.phone,
+
+  dateOfBirth: data.dateOfBirth?.split("T")[0],
+
+  gender:
+
+    data.gender === 0
+
+      ? "Male"
+
+      : data.gender === 1
+
+      ? "Female"
+
+      : "Other",
+
+  profilePhoto: data.profilePhoto,
+
+  addressLine1: data.landmark ?? "",
+
+  city: data.city,
+
+  state: data.state,
+
+  postalCode: data.pinCode,
+   country: "India",
+
+});
 
   } catch (error) {
 
@@ -108,11 +160,41 @@ useEffect(() => {
     setDraft(owner);
     setIsEditing(false);
   };
+const saveChanges = async () => {
+  const genderValue =
+  draft.gender === "Male"
+    ? 0
+    : draft.gender === "Female"
+    ? 1
+    : 2;
+  try {
+    setLoading(true);
+    const payload = {
+      name: draft.fullName,
+      phone: draft.phone,
+      dateOfBirth: draft.dateOfBirth,
+      gender: genderValue,
+      landmark: draft.addressLine1,
+      city: draft.city,
+      state: draft.state,
+      pinCode: draft.postalCode,
+    };
 
-  const saveChanges = () => {
-    setOwner(draft);
-    setIsEditing(false);
-  };
+    await api.put(
+      "/StationProfile/UpdateOwnerProfile",
+      payload
+    );
+
+    await handleapi();
+
+setIsEditing(false);
+  } catch (error) {
+    console.error(error);
+  }
+  finally{
+    setLoading(false);
+  }
+};
 
   const updateField = (field, value) => {
     setDraft((current) => ({ ...current, [field]: value }));
@@ -166,7 +248,14 @@ useEffect(() => {
           <div className="flex flex-col justify-between gap-6 rounded-2xl bg-slate-50 p-5 md:flex-row md:items-center">
             <div className="flex items-center gap-5">
            
-                <img className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full border-4 border-white    text-white shadow" src="" alt="" />
+               <img
+  className="h-24 w-24 shrink-0 rounded-full border-4 border-white shadow object-cover"
+  src={
+    displayedOwner.profilePhoto ||
+    `https://ui-avatars.com/api/?name=${displayedOwner.fullName}`
+  }
+  alt={displayedOwner.fullName}
+/>
               
               <div>
                 <h2 className="text-2xl font-bold text-slate-900">
@@ -265,7 +354,7 @@ useEffect(() => {
                 </p>
               </div>
             </div>
-        
+         
           </div>
 
           <div className="mt-5 flex items-start gap-3 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm text-slate-600">

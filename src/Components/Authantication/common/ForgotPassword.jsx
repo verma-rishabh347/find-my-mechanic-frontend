@@ -1,12 +1,44 @@
 import { HiOutlineLockClosed } from "react-icons/hi";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import api from "../../../data/axios/Axios";
+import { useState } from "react";
 
 
 const ForgotPassword = () => {
-  const handleinput=()=>
+  const [email,setemail] = useState(""); 
+  const navigate =useNavigate();
+  
+  const handleinput= async(e)=>
   {
-    localStorage.setItem("setup","signin");
-    return "/authantication/verifyemail";
+
+    e.preventDefault();
+    
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  var response =emailRegex.test(email);
+
+  if(response)
+  {
+    try{
+      const res = await api.post("Auth/ResetPasswordRequest",{email})
+      console.log(res.data.data);
+      if(res.data.isSuccesed)
+      {
+        localStorage.setItem("email",email)
+        navigate("/authantication/verifyemail")
+
+      }
+
+
+    }
+    catch(err)
+    {
+      console.log(err);
+    }
+  }
+
+
   }
   return (
     <main className="flex items-center justify-center px-4 py-12 bg-background min-h-screen">
@@ -46,17 +78,19 @@ const ForgotPassword = () => {
             <input
               type="email"
               id="email"
+              value={email}
+              onChange={(e)=>setemail(e.target.value)}
               placeholder="john@example.com"
               className="w-full h-12 px-4 rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all bg-transparent"
             />
           </div>
 
-          <Link to={handleinput()}
+          <button onClick={handleinput}
             
             className="w-full h-12 bg-primary bg-blue-900 text-white font-semibold rounded-lg shadow-sm hover:shadow-md active:scale-95 transition-all duration-150 flex items-center justify-center gap-2"
           >
             Send Reset Link
-          </Link>
+          </button>
         </form>
 
       

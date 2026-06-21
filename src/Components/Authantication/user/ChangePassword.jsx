@@ -24,8 +24,9 @@ export default function ChangePassword() {
     return;
   }
 
-  const hasNumberOrSymbol =
-    /[0-9!@#$%^&*(),.?":{}|<>]/.test(newpassword);
+  const hasNumberOrSymbol =/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/.test(newpassword);
+
+
 
   if (!hasNumberOrSymbol) {
     alert("Password must contain a number or symbol");

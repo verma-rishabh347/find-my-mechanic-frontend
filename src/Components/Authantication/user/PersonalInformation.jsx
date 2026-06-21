@@ -46,7 +46,17 @@ const PersonalInformation = () => {
       {
 
       
-      const res =await api.post("UserInformation",{name:state.name,phone:state.phoneNumber,dateOfBirth:state.dob,gender:state.gender});
+      const res =await api.put("UserInformation", {
+
+  name: state.name,
+
+  phone: state.phoneNumber,
+
+  dateOfBirth: state.dob,
+
+  gender: state.gender,
+
+});
        if (res.data?.isSuccesed) {
 
   setedit(true);
