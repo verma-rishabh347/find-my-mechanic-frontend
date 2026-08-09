@@ -26,6 +26,7 @@ const ForgotPassword = () => {
       if(res.data.isSuccesed)
       {
         localStorage.setItem("email",email)
+        localStorage.setItem("verifytype", "forgot")
         navigate("/authantication/verifyemail")
 
       }
@@ -95,12 +96,12 @@ const ForgotPassword = () => {
 
       
         <div className="mt-10 text-center border-t border-outline-variant pt-6">
-          <a
-            href="#"
+          <Link
+            to="/authantication/signin"
             className="inline-flex items-center gap-2 font-semibold text-primary hover:underline group"
           >
             Back to Sign In
-          </a>
+          </Link>
         </div>
       </div>
     </main>

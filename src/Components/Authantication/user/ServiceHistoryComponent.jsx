@@ -4,7 +4,6 @@ const ServiceHistoryComponent = () => {
     "12 May 2026",
     "Tesla Model 3",
     "ABC-1234",
-    "Tire Rotation & Alignment",
     "Precision EV Care",
     "₹4,500",
     "Done"
@@ -24,9 +23,7 @@ const ServiceHistoryComponent = () => {
             <th className="px-6 py-4 text-sm font-semibold text-gray-700">
               Vehicle Number
             </th>
-            <th className="px-6 py-4 text-sm font-semibold text-gray-700">
-              Service Performed
-            </th>
+            
             <th className="px-6 py-4 text-sm font-semibold text-gray-700">
               Mechanic/Shop
             </th>

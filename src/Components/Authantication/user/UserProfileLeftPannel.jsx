@@ -11,7 +11,9 @@ const UserProfileLeftPannel = () => {
   const navlinks = useNavigate();
   const handlethechange = ()=>
   {
-    localStorage.clear("token");
+    localStorage.removeItem("token");
+    localStorage.removeItem("email");
+    localStorage.removeItem("verifytype");
     navlinks("/authantication/signin");
     
   }

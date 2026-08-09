@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../../../data/axios/Axios";
 import { useState } from "react";
 
@@ -12,12 +12,13 @@ const VerifyEmail = () => {
       const res = await api.post("Auth/SignUpVerifyEmail",{email:email,otpCode:Number(otpCode)})
       console.log(res.data);
 
-      localStorage.setItem("token",res.data.data)
-      
       if(res.data.isSuccesed)
       {
+        if (res.data.data) {
+          localStorage.setItem("token", res.data.data)
+        }
         if(localStorage.getItem("verifytype")==="signup"){
-      navigate("/authantication/SetupUserProfile");
+      navigate("/authantication/setupuserprofile");
     }else if (localStorage.getItem("verifytype")==="forgot"){
       navigate("/authantication/createpassword");
     }

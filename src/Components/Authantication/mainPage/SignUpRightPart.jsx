@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useReducer, useState } from 'react';
 import {  NavLink } from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
 import api from '../../../data/axios/Axios';
@@ -18,10 +18,10 @@ const SignUpRightPart = () => {
 
   password: state.password,});
       console.log(res.data);
-      localStorage.setItem("email",state.email);
-localStorage.setItem("verifytype","signup");
       if (res.data.isSuccesed) {
   localStorage.setItem("email", state.email);
+  localStorage.setItem("verifytype", "signup");
+  localStorage.setItem("role", "user");
   navigate("/authantication/verifyemail");
 }
 
@@ -50,6 +50,7 @@ localStorage.setItem("verifytype","signup");
     email: "",
     password: "",
     phone: "",
+    terms: "",
   },
 };
 function reducer(state, action) {
@@ -86,6 +87,7 @@ function reducer(state, action) {
           email: "",
           password: "",
           phone: "",
+          terms: "",
         },
       };
 
@@ -95,6 +97,7 @@ function reducer(state, action) {
 }
   
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const handleSubmit = () => {
   const errors = {};
 
@@ -123,6 +126,10 @@ function reducer(state, action) {
   } else if (!passwordRegex.test(state.password)) {
     errors.password =
       "8-20 chars, uppercase, lowercase, number & special char required";
+  }
+
+  if (!acceptedTerms) {
+    errors.terms = "Please accept the Terms of Service and Privacy Policy";
   }
 
   if (Object.keys(errors).length > 0) {
@@ -216,8 +223,9 @@ function reducer(state, action) {
 </p>
       </div>
       
-      <input type="checkbox" name="" id="" />
-      <label htmlFor="">By signing up, you agree to our Terms of Service and <br /> Privacy Policy.</label>
+      <input type="checkbox" name="terms" id="terms" checked={acceptedTerms} onChange={(e) => setAcceptedTerms(e.target.checked)} />
+      <label htmlFor="terms">By signing up, you agree to our Terms of Service and <br /> Privacy Policy.</label>
+      <p className="text-red-500 text-sm">{state.errors.terms}</p>
       <br />
       <div><button onClick={handleSubmit} className='w-[70%] mt-5 mb-5 h-10 bg-blue-800 text-white rounded-2xl'  >Create Account</button></div>
        <br />

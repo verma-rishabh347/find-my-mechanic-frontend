@@ -30,8 +30,8 @@ function SignIn() {
     navigate("/");
 
   } catch (err) {
-
     console.log(err.response?.data);
+    setPasswordError(err.response?.data?.message || "Invalid email or password");
 
   }
 
@@ -45,6 +45,9 @@ const [passwordError, setPasswordError] = useState("");
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,20}$/;
 
   const onlogin = () => {
+
+  setEmailError("");
+  setPasswordError("");
 
   if (!email) {
     setEmailError("Email is required");
@@ -82,7 +85,7 @@ const [passwordError, setPasswordError] = useState("");
       <h1 className='text-3xl mt-4 text-center'>Welcome Back</h1>
       <p className='text-center mt-2'>Log in to manage your vehicle service and find<br /> trusted mechanics near you.</p>
       <div className='mt-10 text-start'><label  htmlFor="">Email Address</label> <br />
-      <input className='border h-10 rounded-xl w-full' type="text" value={email} onChange={(e)=>setemail(e.target.value)} name="" id="" />
+      <input className='border h-10 rounded-xl w-full' type="email" value={email} onChange={(e)=>setemail(e.target.value)} name="email" id="email" />
       {emailError && (
 
   <p className="text-red-500 text-sm mt-1">{emailError}</p>
@@ -90,7 +93,7 @@ const [passwordError, setPasswordError] = useState("");
 )}
       </div>
       <div className='mt-4 '><div className='flex justify-between'><label htmlFor="">Password</label> <Link className='text-blue-600' to="/authantication/passwordreset" >Forgot Password?</Link></div>
-      <input className='border h-10 rounded-xl w-full'  type="password" value={password} onChange={e=>setpassword(e.target.value)} name="" id="" />
+      <input className='border h-10 rounded-xl w-full'  type="password" value={password} onChange={e=>setpassword(e.target.value)} name="password" id="password" />
       {passwordError && (
   <p className="text-red-500 text-sm mt-1">{passwordError}</p>
 )}

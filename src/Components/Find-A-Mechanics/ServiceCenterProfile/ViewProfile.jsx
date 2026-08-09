@@ -114,33 +114,7 @@ const ViewProfile = () => {
               </p>
             </section>
 
-            <section>
-              <h2 className="mb-8 text-3xl font-bold text-blue-900">
-                Services Offered
-              </h2>
-
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                {services.map((service) => (
-                  <article
-                    key={service.title}
-                    className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm"
-                  >
-                    <div className="flex">
-
-                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-xl text-blue-900">
-                      🔧
-                    </div>
-                    <h3 className="mt-2 text-xl items-center justify-center  font-bold text-gray-900">
-                      {service.title}
-                    </h3>
-
-                    </div>
-                    
-                   
-                  </article>
-                ))}
-              </div>
-            </section>
+           
 
             
            
@@ -181,15 +155,7 @@ const ViewProfile = () => {
               </h2>
 
               
-                 <iframe
-  className="mt-5 h-52 w-full rounded-2xl border"
-  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13940.215760924808!2d75.70919765942942!3d29.13359939941505!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3912334a008f49d3%3A0x86e368d9f064e503!2ssector%2015%2C%20Housing%20Board%20Colony%2C%20Sector%2015A%2C%20Hisar%2C%20Haryana%20125001!5e0!3m2!1sen!2sin!4v1779081504036!5m2!1sen!2sin"
-  width="600"
-  height="450"
-  style={{ border: 0 }}
-  allowFullScreen
-  title="map"
-/>
+                 
 
 
 

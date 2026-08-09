@@ -1,7 +1,45 @@
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import api from "../../../data/axios/Axios";
 
 const CreatePassword = () => {
+  const navigate = useNavigate();
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/;
+
+    if (!passwordRegex.test(newPassword)) {
+      setError("Password must be 8-20 characters and include uppercase, lowercase, number and special character.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    try {
+      const response = await api.post("Auth/NewPassword", {
+        email: localStorage.getItem("email"),
+        newPassword,
+      });
+      if (!response.data.isSuccesed && !response.data.succeeded) {
+        setError(response.data.message || "Unable to reset password.");
+        return;
+      }
+      localStorage.removeItem("verifytype");
+      localStorage.removeItem("email");
+      localStorage.removeItem("token");
+      navigate("/authantication/resetsuccess");
+    } catch (requestError) {
+      setError(requestError.response?.data?.message || "Unable to reset password.");
+    }
+  };
+
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-12 md:py-24 bg-background">
       <div className="max-w-[480px] w-full">
@@ -22,7 +60,7 @@ const CreatePassword = () => {
           </div>
 
           
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             
          
             <div className="space-y-1">
@@ -37,6 +75,8 @@ const CreatePassword = () => {
                 <input
                   id="new_password"
                   type="password"
+                  value={newPassword}
+                  onChange={(event) => { setNewPassword(event.target.value); setError(""); }}
                   placeholder="••••••••"
                   className="w-full h-12 px-4 bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                 />
@@ -63,6 +103,8 @@ const CreatePassword = () => {
                 <input
                   id="confirm_password"
                   type="password"
+                  value={confirmPassword}
+                  onChange={(event) => { setConfirmPassword(event.target.value); setError(""); }}
                   placeholder="••••••••"
                   className="w-full h-12 px-4 bg-surface-container-lowest border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                 />
@@ -77,25 +119,25 @@ const CreatePassword = () => {
             </div>
 
            
-            <Link to="/authantication/resetsuccess"><button
-           
+            {error && <p className="text-sm text-red-600">{error}</p>}
+
+            <button
               type="submit"
               className="w-full h-14 bg-blue-800 text-white font-semibold rounded-xl shadow-md hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
             >
               Reset Password
             </button>
-</Link>
             
          
             <div className="text-center mt-6">
-              <a
-                href="#"
+              <Link
+                to="/authantication/signin"
                 className="inline-flex items-center gap-1 font-semibold text-sm text-primary hover:underline transition-all"
               >
                
 
                 Back to Sign In
-              </a>
+              </Link>
             </div>
           </form>
         </div>

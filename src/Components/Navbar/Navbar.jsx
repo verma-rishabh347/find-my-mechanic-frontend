@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom'
 
 function Navbar() {
     var options = [{name: "Home",links:"/"},{name:"Find a Mechanic",links:"/find-mechanic"}, {name: "About Us",links:"/about"}, {name: "Contact",links:"/contactus"}]
+    const token = localStorage.getItem("token");
+
     
   return (
     <><div className='text-black flex items-center justify-between z-50 sticky top-0 text-xl p-4 bg-gray-300 '>
@@ -16,24 +18,25 @@ function Navbar() {
        <div>
   
     <div className='flex'>
-    <div className="mr-10 border bg-blue-900 text-white px-4 py-1.5 rounded-2xl">
+      {/* <div className="mr-10 border bg-blue-900 text-white px-4 py-1.5 rounded-2xl">
       <Link to="/authantication/signin">
         Sign In
       </Link>
-    </div>
-    <div className="mr-10 border bg-blue-900 text-white px-4 py-1.5 rounded-2xl">
+    </div> */}
+    
+    {/* <div className="mr-10 border bg-blue-900 text-white px-4 py-1.5 rounded-2xl">
       <Link to="/businessprofilepage">
         Buisness Profile
       </Link>
-    </div>
+    </div> */}
 
 
-
-    <div className="mr-10 border bg-blue-900 text-white px-4 py-1.5 rounded-2xl">
+      <div className="mr-10 border bg-blue-900 text-white px-4 py-1.5 rounded-2xl">
       <Link to="/profilepage">
         Profile
       </Link>
     </div>
+    
 
     </div>
 

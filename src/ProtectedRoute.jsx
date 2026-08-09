@@ -9,9 +9,12 @@ const ProtectedRoute = () => {
     return <Navigate to="/authantication/signin" replace />;
   }
 
-  const decoded = jwtDecode(token);
-
-  console.log(decoded);
+  try {
+    jwtDecode(token);
+  } catch {
+    localStorage.removeItem("token");
+    return <Navigate to="/authantication/signin" replace />;
+  }
 
   return (
     <>
