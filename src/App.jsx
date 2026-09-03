@@ -33,15 +33,12 @@ import UserAddressCreate from './Components/Authantication/user/UserAddressCreat
 import ShopDetailsForm from './Components/Authantication/owner/ShopDetailsForm'
 import ShopAddressForm from './Components/Authantication/owner/ShopAddressForm'
 import AskVehicleType from './Components/Authantication/owner/AskVehicleType'
-import BikeServicesList from './Components/Authantication/owner/BikeServicesList'
-import CarServicesList from './Components/Authantication/owner/CarServicesList'
 import OwnerProfile from './Components/BusinessProfile/OwnerProfile'
 import ServiceStationProfile from './Components/BusinessProfile/ServiceStationProfile'
 import DashBoard from './Components/BusinessProfile/DashBoard'
 import MechanicProfiles from './Components/BusinessProfile/MechanicProfiles'
 import Bookings from './Components/BusinessProfile/Bookings'
 import Reviews from './Components/BusinessProfile/Reviews'
-import Services from './Components/BusinessProfile/Services'
 import StationSettings from './Components/BusinessProfile/SatationSettings'
 import ProtectedRoute from './ProtectedRoute'
 import BookigConfirm from './Components/Find-A-Mechanics/ServiceCenterProfile/BookServices/BookigConfirm'
@@ -101,8 +98,6 @@ function App() {
             <Route path='shopdetailsform' element={<ShopDetailsForm/>}   />
             <Route path='shopaddressform' element={<ShopAddressForm/>}   />
             <Route path='askvehicletype' element={<AskVehicleType/>}   />
-            <Route path='bikeserviceslist' element={<BikeServicesList/>}   />
-            <Route path='carserviceslist' element={<CarServicesList/>}   />
 
 
 
@@ -146,7 +141,6 @@ function App() {
         <Route  path='mechanicprofiles'  element={<MechanicProfiles/>}  />
         <Route  path='bookings'  element={<Bookings/>}  />
         <Route  path='reviews'  element={<Reviews/>}  />
-        <Route  path='services'  element={<Services/>}  />
         <Route  path='stationsettings'  element={<StationSettings/>}  />
       </Route>
 

@@ -25,6 +25,7 @@ function SignIn() {
 
     );
     
+    
 
 
     navigate("/");
@@ -36,6 +37,23 @@ function SignIn() {
   }
 
 };
+ const token = localStorage.getItem("token");
+
+let decoded = null;
+  const [role, setRole] = useState(null);
+
+
+  if (token) {
+  try {
+    decoded = jwtDecode(token);
+    role = decoded.role;
+
+    console.log(decoded);
+    localStorage.setItem("role", role);
+  } catch (error) {
+    console.log("Invalid token");
+  }
+}
   const navigate = useNavigate();
   const [email,setemail] = useState("");
   const [password,setpassword] = useState("");

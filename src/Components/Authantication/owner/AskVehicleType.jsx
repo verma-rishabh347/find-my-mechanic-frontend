@@ -3,19 +3,42 @@
 import { FiTruck } from "react-icons/fi";
 import { FaMotorcycle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import api from "../../../data/axios/Axios";
 
 export default function AskVehicleType() {
   const nav = useNavigate();
-  const onnextpage = (prop)=>
+  const onnextpage = async (prop)=>
   {
+    let vt = null;
     if(prop=="bike")
     {
-      nav("/bikeserviceslist")
+      vt=1;
     }
-    else if(prop =="car")
+    else if(prop =="car") 
     {
-      nav("/carserviceslist")
+      vt=2;
     }
+
+    if(vt==1 || vt==2)
+    {
+      try
+    {
+      const res = await api.post("/OwnerSetup/StationType",{VehicleType:vt});
+      console.log(res.data);
+      if(res.data.isSuccesed==true)
+      {
+        nav("/businessprofilepage");
+      }
+
+    }
+    catch(err)
+    {
+
+      console.log(err);
+    }
+    }
+
+    
 
   }
   return (

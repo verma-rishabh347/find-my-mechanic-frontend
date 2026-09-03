@@ -14,6 +14,9 @@ const LeftPannelServiceStation = () => {
   const navlinks = useNavigate();
   const handlethechange = ()=>
   {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+
     navlinks("/authantication/signin");
     
   }
@@ -57,12 +60,6 @@ const LeftPannelServiceStation = () => {
   },
   {
     id: 7,
-    name: "Services",
-    to: "services",
-    icon: <FiTool />,
-  },
-  {
-    id: 8,
     name: "Website Settings",
     to: "StationSettings",
     icon: <FiSettings />,

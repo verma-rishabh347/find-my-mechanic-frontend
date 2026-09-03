@@ -21,7 +21,7 @@ const [state, setState] = useState("");
 
     console.log(res.data);
 
-    if (res.data.succeeded) {
+    if (res.data.isSuccesed) {
       navigate("/askvehicletype");
     }
   } catch (error) {

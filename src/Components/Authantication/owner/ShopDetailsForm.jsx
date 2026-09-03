@@ -29,7 +29,7 @@ const handleapi = async () => {
     });
 
     console.log(res.data);
-  if (res.data.succeeded) {
+  if (res.data.isSuccesed) {
 
       navigate("/shopaddressform");
   }

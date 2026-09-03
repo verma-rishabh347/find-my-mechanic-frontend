@@ -15,8 +15,9 @@ import {
   FiHash,
   FiUpload,
 } from "react-icons/fi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCarSide } from "react-icons/fa";
+import api from "../../data/axios/Axios";
 
 const initialStation = {
   cover:
@@ -92,6 +93,18 @@ const startEdit = () => {
 
   const [newService, setNewService] = useState("");
 
+ const handleApiIncome = async () => {
+  try {
+    const res = await api.get("/StationProfile/GetStationDetail");
+    console.log(res.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+useEffect(() => {
+  handleApiIncome();
+}, []);
 
 
   const cancelEdit = () => {

@@ -14,6 +14,7 @@ const UserProfileLeftPannel = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("email");
     localStorage.removeItem("verifytype");
+    localStorage.removeItem("role");
     navlinks("/authantication/signin");
     
   }
