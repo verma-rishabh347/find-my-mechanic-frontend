@@ -3,20 +3,14 @@ import {
   FiPhone,
   FiMail,
   FiMapPin,
-  FiCheckCircle,
-  FiClock,
   FiEdit2,
   FiSave,
   FiX,
-  FiImage,
-  FiTool,
-  FiStar,
   FiBriefcase,
   FiHash,
   FiUpload,
 } from "react-icons/fi";
 import { useEffect, useState } from "react";
-import { FaCarSide } from "react-icons/fa";
 import api from "../../data/axios/Axios";
 
 const initialStation = {
@@ -39,7 +33,7 @@ const initialStation = {
   bays: 6,
   active: true,
   ratings: 4.9,
-  jobsDone: 8420
+  jobsDone: 8420,
 };
 
 function Field({ label, value, onChange, type = "text", disabled }) {
@@ -81,40 +75,61 @@ export default function ServiceStationProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const [station, setStation] = useState(initialStation);
   const [draft, setDraft] = useState(
-  JSON.parse(JSON.stringify(initialStation))
-);
-
-const startEdit = () => {
-  setDraft(JSON.parse(JSON.stringify(station)));
-  setIsEditing(true);
-};
-
-
+    JSON.parse(JSON.stringify(initialStation))
+  );
 
   const [newService, setNewService] = useState("");
 
- const handleApiIncome = async () => {
-  try {
-    const res = await api.get("/StationProfile/GetStationDetail");
-    console.log(res.data);
-  } catch (err) {
-    console.log(err);
-  }
-};
+  const startEdit = () => {
+    setDraft(JSON.parse(JSON.stringify(station)));
+    setIsEditing(true);
+  };
 
-useEffect(() => {
-  handleApiIncome();
-}, []);
+  const handleApiIncome = async () => {
+    try {
+      const res = await api.get("/StationProfile/GetStationDetail");
+      const apiData = res.data?.data;
 
+      if (apiData) {
+        setStation((prev) => {
+          const updated = {
+            ...prev,
+            owner:apiData.ownername || prev.owner,
+            name: apiData.name || prev.name,
+            tagline: apiData.description || prev.tagline,
+            phone: apiData.phone || prev.phone,
+            email: apiData.email || prev.email,
+            logo: apiData.photo || prev.logo,
+            city: apiData.city || prev.city,
+            state: apiData.state || prev.state,
+            street: apiData.landmark || prev.street,
+            zip: apiData.pincode || prev.zip,
+            gst: apiData.gstNumber || prev.gst,
+            experience: apiData.experienceYear ?? prev.experience,
+          };
+          // draft ko bhi sync kar do taaki edit mode me latest data dikhe
+          setDraft(JSON.parse(JSON.stringify(updated)));
+          return updated;
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    handleApiIncome();
+  }, []);
 
   const cancelEdit = () => {
-  setDraft(JSON.parse(JSON.stringify(station)));
-  setIsEditing(false);
-};
+    setDraft(JSON.parse(JSON.stringify(station)));
+    setIsEditing(false);
+  };
 
   const saveEdit = () => {
     setStation(draft);
     setIsEditing(false);
+    // yahan chaho to save API call bhi laga sakte ho (PUT/POST)
   };
 
   const update = (key) => (val) => setDraft({ ...draft, [key]: val });
@@ -200,7 +215,6 @@ useEffect(() => {
         <div className="p-6 sm:p-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="flex items-center gap-5">
-              
               <div>
                 <div className="flex items-center gap-3 flex-wrap">
                   {isEditing ? (
@@ -215,7 +229,6 @@ useEffect(() => {
                       {display.name}
                     </h2>
                   )}
-                  
                 </div>
 
                 {isEditing ? (
@@ -238,13 +251,9 @@ useEffect(() => {
             </div>
 
             <div className="flex flex-col items-start lg:items-end gap-2">
-    
               <div className="flex items-center gap-3">
-                
                 <button
-                  onClick={() =>
-                    isEditing && update("active")(!draft.active)
-                  }
+                  onClick={() => isEditing && update("active")(!draft.active)}
                   className={`w-14 h-8 rounded-full relative transition ${
                     display.active ? "bg-[#0b2d89]" : "bg-gray-300"
                   } ${isEditing ? "cursor-pointer" : "cursor-not-allowed"}`}
@@ -268,7 +277,6 @@ useEffect(() => {
               <h3 className="text-2xl font-bold text-[#0b2d89] mt-1">
                 {display.ratings}
               </h3>
-              
             </div>
 
             <div className="rounded-2xl bg-slate-200 p-4">
@@ -278,7 +286,6 @@ useEffect(() => {
               <h3 className="text-2xl font-bold text-green-700 mt-1">
                 {display.jobsDone.toLocaleString()}+
               </h3>
-              
             </div>
 
             <div className="rounded-2xl bg-slate-200 p-4">
@@ -288,10 +295,7 @@ useEffect(() => {
               <h3 className="text-2xl font-bold text-green-800 mt-1">
                 {display.mechanics}
               </h3>
-              
             </div>
-
-            
           </div>
         </div>
       </div>
@@ -402,17 +406,13 @@ useEffect(() => {
                 <Field
                   label="Experience (years)"
                   value={draft.experience}
-                  onChange={(v) =>
-                    update("experience")(Number(v) || 0)
-                  }
+                  onChange={(v) => update("experience")(Number(v) || 0)}
                   type="number"
                 />
                 <Field
                   label="Mechanics"
                   value={draft.mechanics}
-                  onChange={(v) =>
-                    update("mechanics")(Number(v) || 0)
-                  }
+                  onChange={(v) => update("mechanics")(Number(v) || 0)}
                   type="number"
                 />
                 <Field
@@ -426,11 +426,6 @@ useEffect(() => {
           )}
         </div>
       </div>
-
-      
-
-  
-      
     </div>
   );
 }
