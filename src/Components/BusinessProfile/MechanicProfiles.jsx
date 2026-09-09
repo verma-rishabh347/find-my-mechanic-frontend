@@ -1,23 +1,20 @@
-import { useMemo, useState } from "react";
+import axios from "axios";
+import { useEffect, useMemo, useState } from "react";
 import { FiMail, FiPhone, FiPlus, FiUsers } from "react-icons/fi";
+import api from "../../data/axios/Axios";
+import { useNavigate } from "react-router-dom";
 
 const initialMechanics = [
   {
     id: 1,
     name: "Marcus Thorne",
-    initials: "MT",
-    role: "Senior Engine Specialist",
-    specialty: "Engine",
     phone: "+1 (555) 012-3456",
     email: "marcus@precisionauto.com",
     experience: 12,
-    jobs: 1420,
-    rating: 4.9,
-    activeJobs: 2,
-    status: "Active",
-    skills: ["Engine Repair", "Diagnostics", "Transmission"],
   },
 ];
+
+
 
 function SummaryCard({ title, value }) {
   return (
@@ -29,7 +26,8 @@ function SummaryCard({ title, value }) {
 }
 
 const MechanicProfiles = () => {
-  const [mechanics] = useState(initialMechanics);
+  const [mechanics,setmechanics] = useState(initialMechanics);
+const [editingId, setEditingId] = useState(null);
 
   const activeCount = mechanics.filter(
     (mechanic) => mechanic.status === "Active",
@@ -50,6 +48,69 @@ const MechanicProfiles = () => {
     0,
   );
 
+  const handlegetapi = async () =>
+{
+  try{
+    const res = await api.get("/Mechanic");
+    console.log(res.data.data);
+    setmechanics(res.data.data);
+  }
+  catch(err)
+  {
+    console.log(err);
+  }
+
+}
+
+const nav = useNavigate();
+
+const addmechanic = ( ) =>
+{
+  nav('/businessprofilepage/addmechanic');
+}
+
+useEffect(()=>{handlegetapi()},[]);
+
+const changeedit = (id) => {
+  setEditingId(id);
+};
+
+const handleChange = (id, field, value) => {
+  setmechanics((prev) =>
+    prev.map((mechanic) =>
+      mechanic.id === id
+        ? { ...mechanic, [field]: value }
+        : mechanic
+    )
+  );
+};
+
+const handleSave = async (mechanic) => {
+  try {
+    const res = await api.put(`/Mechanic`, mechanic);
+
+    console.log(res.data);
+
+    setEditingId(null);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const handledelte = async (mechanic) =>
+{
+  try
+  {
+     const res = await api.delete(`/Mechanic/${mechanic.id}`);
+     console.log(res.data);
+      }
+      catch(err)
+      {
+        console.log(err);
+      }
+}
+
+
   return (
     <main className="min-w-0 flex-1 bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[1500px] space-y-6">
@@ -66,7 +127,7 @@ const MechanicProfiles = () => {
             </p>
           </div>
 
-          <button className="flex h-12 items-center justify-center gap-2 self-start rounded-xl bg-[#0b2d89] px-5 font-semibold text-white transition hover:bg-blue-900 sm:self-auto">
+          <button onClick={addmechanic} className="flex h-12 items-center justify-center gap-2 self-start rounded-xl bg-[#0b2d89] px-5 font-semibold text-white transition hover:bg-blue-900 sm:self-auto">
             <FiPlus />
             Add mechanic
           </button>
@@ -87,62 +148,82 @@ const MechanicProfiles = () => {
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex min-w-0 items-center gap-4">
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#0b2d89] text-lg font-bold text-white">
-                    {mechanic.initials}
-                  </div>
+                 
+              
                   <div className="min-w-0">
-                    <h2 className="truncate text-xl font-bold text-slate-900">
-                      {mechanic.name}
-                    </h2>
-                    <p className="truncate text-sm text-slate-500">
-                      {mechanic.role}
-                    </p>
+                    <input
+  disabled={editingId !== mechanic.id}
+  value={mechanic.name}
+  onChange={(e) =>
+    handleChange(mechanic.id, "name", e.target.value)
+  }
+/>
+             
+                
                   </div>
                 </div>
 
-                <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-                  {mechanic.status}
-                </span>
+       
               </div>
 
               <div className="mt-5 grid grid-cols-3 gap-3">
                 <div className="rounded-2xl bg-slate-50 p-3">
                   <p className="text-xs text-slate-400">Experience</p>
-                  <p className="mt-1 font-bold text-slate-900">
-                    {mechanic.experience} yrs
-                  </p>
+                 <input
+  disabled={editingId !== mechanic.id}
+  value={mechanic.experience}
+  onChange={(e) =>
+    handleChange(mechanic.id, "experience", e.target.value)
+  }
+/>
+                
                 </div>
-                <div className="rounded-2xl bg-slate-50 p-3">
-                  <p className="text-xs text-slate-400">Jobs done</p>
-                  <p className="mt-1 font-bold text-slate-900">
-                    {mechanic.jobs.toLocaleString()}
-                  </p>
-                </div>
-                <div className="rounded-2xl bg-slate-50 p-3">
-                  <p className="text-xs text-slate-400">Rating</p>
-                  <p className="mt-1 font-bold text-slate-900">
-                    {mechanic.rating.toFixed(1)}
-                  </p>
-                </div>
+               
+               
               </div>
 
               <div className="mt-5 space-y-2">
-                <a
-                  href={`tel:${mechanic.phone}`}
-                  className="flex items-center gap-3 rounded-xl bg-slate-50 px-3 py-2.5 text-sm text-slate-600"
-                >
-                  <FiPhone className="shrink-0 text-slate-400" />
-                  {mechanic.phone}
-                </a>
-                <a
-                  href={`mailto:${mechanic.email}`}
-                  className="flex items-center gap-3 rounded-xl bg-slate-50 px-3 py-2.5 text-sm text-slate-600"
-                >
-                  <FiMail className="shrink-0 text-slate-400" />
-                  <span className="truncate">{mechanic.email}</span>
-                </a>
+                <input
+  disabled={editingId !== mechanic.id}
+  value={mechanic.phone}
+  onChange={(e) =>
+    handleChange(mechanic.id, "phone", e.target.value)
+  }
+/>
+               <input
+  disabled={editingId !== mechanic.id}
+  value={mechanic.email}
+  onChange={(e) =>
+    handleChange(mechanic.id, "email", e.target.value)
+  }
+/>
+              </div>
+
+              <div className="flex space-x-20 text-center w-40 justify-center ">
+                {editingId === mechanic.id ? (
+  <>
+    <button onClick={() => handleSave(mechanic)}>
+      Save
+    </button>
+
+    <button onClick={() => setEditingId(null)}>
+      Cancel
+    </button>
+  </>
+) : (
+  <>
+    <button onClick={() => changeedit(mechanic.id)}>
+      Edit
+    </button>
+
+    <button onClick={()=>handledelte(mechanic)}>
+      Delete
+    </button>
+  </>
+)}
               </div>
             </article>
+
           ))}
         </section>
 

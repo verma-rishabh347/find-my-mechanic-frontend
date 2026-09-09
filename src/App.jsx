@@ -43,6 +43,7 @@ import StationSettings from './Components/BusinessProfile/SatationSettings'
 import ProtectedRoute from './ProtectedRoute'
 import BookigConfirm from './Components/Find-A-Mechanics/ServiceCenterProfile/BookServices/BookigConfirm'
 import ChangePassword from './Components/Authantication/user/ChangePassword'
+import AddMechanic from './Components/BusinessProfile/AddMechanic'
 
 function App() {
  
@@ -91,9 +92,9 @@ function App() {
             
             <Route path="/find-mechanic" element={<FindAMechanicPage />}   />
 
-             <Route path='bookingpage'  element={<BookingPage/>}/>
-             <Route path='bookingconfirm' element={<BookigConfirm/>}  />
-            <Route path='viewProfile'  element={<ViewProfile/>}/>
+             <Route path='bookingpage/:id'  element={<BookingPage/>}/>
+             <Route path='bookingconfirm/:id' element={<BookigConfirm/>}  />
+            <Route path='viewProfile/:id'  element={<ViewProfile/>}/>
             <Route path='becomeapartner' element={<BecomeAPartner/>} />
             <Route path='shopdetailsform' element={<ShopDetailsForm/>}   />
             <Route path='shopaddressform' element={<ShopAddressForm/>}   />
@@ -142,6 +143,7 @@ function App() {
         <Route  path='bookings'  element={<Bookings/>}  />
         <Route  path='reviews'  element={<Reviews/>}  />
         <Route  path='stationsettings'  element={<StationSettings/>}  />
+        <Route path='addmechanic' element={<AddMechanic/>} />
       </Route>
 
 

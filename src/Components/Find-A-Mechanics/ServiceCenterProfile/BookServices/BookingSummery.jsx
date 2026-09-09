@@ -1,13 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-const VEHICLE_OPTIONS = [
-  "Tesla Model 3",
-  "Tesla Model Y",
-  "Hyundai Creta",
-  "Maruti Swift",
-  "Toyota Innova",
-];
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import api from "../../../../data/axios/Axios";
 
 // Only tomorrow onwards is bookable — today and past dates are blocked.
 function getMinDate() {
@@ -73,13 +66,73 @@ function ChevronDown() {
 }
 
 function BookingSummary() {
-  const [vehicle, setVehicle] = useState(VEHICLE_OPTIONS[0]);
+  const { id } = useParams(); // stationId route se (agar route "/bookingpage/:id" hai)
+  const navigate = useNavigate();
+
+  const [vehicles, setVehicles] = useState([]);
+  const [vehicleId, setVehicleId] = useState("");
+  const [vehicleLoading, setVehicleLoading] = useState(true);
+  const [vehicleError, setVehicleError] = useState(null);
+
   const [date, setDate] = useState(MIN_DATE);
   const [time, setTime] = useState(TIME_SLOTS[0]);
 
-  const navigate = useNavigate();
-  const onNextPage = () => {
-    navigate("/bookingconfirm");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Vehicles ko fetch karke store karna
+  const handlegetapi = async () => {
+    try {
+      setVehicleLoading(true);
+      const res = await api.get("/UserVehicle");
+
+      const list = res.data.data || [];
+      setVehicles(list);
+
+      // Pehli vehicle ko default select kar dete hain
+      if (list.length > 0) {
+        setVehicleId(list[0].id);
+      }
+    } catch (err) {
+      console.log(err);
+      setVehicleError("Failed to load vehicles.");
+    } finally {
+      setVehicleLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handlegetapi();
+  }, []);
+
+  const onNextPage = async () => {
+    if (!vehicleId) {
+      setError("Please select a vehicle.");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      setError(null);
+
+      const preferredServiceDate = new Date(`${date} ${time}`);
+
+      const payload = {
+        StationId: Number(id),
+        VechicleId: Number(vehicleId),
+        PreferredServiceDate: preferredServiceDate.toISOString(),
+      };
+
+      const response = await api.post("FindMechanics/AddABooking", payload);
+
+      console.log(response.data.message);
+      navigate(`/bookingconfirm/${response.data.message}`);
+    } catch (err) {
+      console.error("Error creating booking:", err);
+      setError("Failed to create booking. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -96,6 +149,12 @@ function BookingSummary() {
         </div>
 
         <div className="space-y-5 px-7 py-6">
+          {error && (
+            <div className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+              {error}
+            </div>
+          )}
+
           {/* Vehicle */}
           <div>
             <label className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
@@ -103,18 +162,34 @@ function BookingSummary() {
               Vehicle
             </label>
             <div className="relative">
-              <select
-                value={vehicle}
-                onChange={(e) => setVehicle(e.target.value)}
-                className="w-full cursor-pointer appearance-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 pr-10 font-semibold text-slate-900 outline-none transition hover:border-slate-300 focus:border-[#0b2d89] focus:ring-4 focus:ring-[#0b2d89]/10"
-              >
-                {VEHICLE_OPTIONS.map((v) => (
-                  <option key={v} value={v}>
-                    {v}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown />
+              {vehicleLoading ? (
+                <div className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-400">
+                  Loading vehicles...
+                </div>
+              ) : vehicleError ? (
+                <div className="w-full rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-500">
+                  {vehicleError}
+                </div>
+              ) : vehicles.length === 0 ? (
+                <div className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-400">
+                  No vehicles found.
+                </div>
+              ) : (
+                <>
+                  <select
+                    value={vehicleId}
+                    onChange={(e) => setVehicleId(e.target.value)}
+                    className="w-full cursor-pointer appearance-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 pr-10 font-semibold text-slate-900 outline-none transition hover:border-slate-300 focus:border-[#0b2d89] focus:ring-4 focus:ring-[#0b2d89]/10"
+                  >
+                    {vehicles.map((v) => (
+                      <option key={v.id} value={v.id}>
+                        {v.brand} {v.model} — {v.vehicleNumber}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown />
+                </>
+              )}
             </div>
           </div>
 
@@ -161,20 +236,23 @@ function BookingSummary() {
 
           <button
             onClick={onNextPage}
-            className="group mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0b2d89] py-4 font-semibold text-white transition hover:bg-[#082065] active:scale-[0.99]"
+            disabled={submitting || vehicleLoading}
+            className="group mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0b2d89] py-4 font-semibold text-white transition hover:bg-[#082065] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Confirm Appointment
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4 transition group-hover:translate-x-0.5"
-            >
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
+            {submitting ? "Booking..." : "Confirm Appointment"}
+            {!submitting && (
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-4 w-4 transition group-hover:translate-x-0.5"
+              >
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            )}
           </button>
         </div>
       </div>

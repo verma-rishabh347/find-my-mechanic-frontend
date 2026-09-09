@@ -1,14 +1,44 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import api from "../../../data/axios/Axios";
 
-
-
-import { useNavigate } from "react-router-dom";
 
 const ViewProfile = () => {
-    const nav = useNavigate();
-    const onnextpage = ()=>
-    {
-        nav("/bookingpage");
-    }
+  const nav = useNavigate();
+  const [station, setStation] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+    const { id } = useParams();
+
+  const onnextpage = () => {
+    nav(`/bookingpage/${id}`);
+  };
+
+  useEffect(() => {
+    const fetchStationDetail = async () => {
+      try {
+        setLoading(true);
+        
+
+        const response = await api.get("FindMechanics/GetStationDetailById",           {
+
+            params: { id }
+
+          });
+        setStation(response.data.data);
+        console.log(response.data.data);
+      } catch (err) {
+        console.error("Error fetching station detail:", err);
+        setError("Failed to load station details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStationDetail();
+  }, []);
+
   const services = [
     {
       icon: "charging_station",
@@ -31,67 +61,57 @@ const ViewProfile = () => {
       desc: "Precision troubleshooting for complex wiring, battery, and alternator issues.",
     },
   ];
-  const days = [
-                  "Monday",
-                  "Tuesday",
-                  "Wednesday",
-                  "Thursday",
-                  "Friday",
-                ];
 
-  const team = [
-    {
-      name: "Marcus Thorne",
-      role: "Lead Master Technician",
-      image:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuBH7gi_nqXJJgO0O_3cpevSY_v7q5-MasVxEBVCOCToOWPxt6S5L_C1eSMjZ9uERGNP-HYbeu2kMtv9U4jRUfdv-un-HtmyA8ESdJJkbKfYYppT1hkVpeipQekgKiwVgFErzZUCMgbWlUv-A--tVKuhy8PBM5Vn0vSq2YghQL1KlIgex-vjdbYR8lXIf-OOFxF_Sioo4KVrzW0g3u0_YwZtRcLMaEx96cXpTaBTfusiMf6XdHh-_bhy3xS0Wit4SQnioyPcSQbdSL6L",
-    },
-    {
-      name: "Elena Rodriguez",
-      role: "European Specialist",
-      image:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuBZs5q4iwfoQljRkyVtaC_Gp9ty8uwgrsoC_nyZZoWC7Z69IanW9h9jbF8NgtPKx0djwsNyCQ_njfwTtYeT35rvcwbsLaqE60evXk0F3AvgRZZAeePun7F6-3q0KsyylxFbk3e09bKGjq4wkGPtkDdenCUQMWIOuBAoIgUCf7UUhEsxfLSSNQ9UwSVZkESuxOFI8-YxaXcA1aOhsTY16ontE69aMRyQKi2hK6BKK_LNjENx-b_GmBURoBmBT5AfTXa5RPikpSXiA124",
-    },
-  ];
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-  const gallery = [
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuBbsSeJUZSMi-xAxE_UI8wUiU2_MnzgDQMXSaJIlbfT9qx-AJsq46-X_UvE4rM0jJoqY0hjsDzRXGwY7Pl1-6TIq095HbWfzx5QX9yGR6ARrWLZ85PzluxJa6Kkp8erUtTf6G_K43UMxDU-4am3i9yXDzF17XLo5MNFEK21FqwTnsBFeHkSKHhJlwJ37694mexthe4DTZuT7zBMsAovP5LrIGtjFhc8EKmysei-5QWkE1F4RLb0rchK72jFFsDGz7r1q1Nvlta6UbW4",
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuCgnSJir2yzfPrNBp3h3e8honp8597LMRvOvSKxboDo41j1b7_vj4jU5Pjj524pdw7JDsahLYX7ST6dgGD9cInLRjmJMCpa4xs6WRLactcuR05o13XJk1hDGX18yxQa2AmuQLhGejZLwlhE_uKLUaC9Rl9YGfcSlK6moeB-1ycup9XRh6UQWJ-Y8uDAWL5HlYTLARlpgHqV62JuJIlquHiuD37Wy8triC7MCtS32BniaejSvJD9qiaAvTgboExRiugxvFOURcEhYiFg",
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuC-CeH7SK13u4GRYXfVoExmfEGP8fskqEsP4mdkzfbUIPu8sTUtwBgafKUhKzPVeMVFdkUYKavJno6M28ntwyI35rmN5Y4Nd41tUPcp8rWo9luaIDll3mXU3dciZmMvY-EMhqo9i1ULhs-V5mJKwroGWPVAWWzlFsqsOj3ArV8vwmdwFSlVn-kpqrZNfWahgImCuYemSeWaLbEWLUkKpJxq4JK6hvQJXSC8TqAEPj0LFSjBP9FUxAAWRJLEh5WLwPVQm3HVrTqmTOkF",
-  ];
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f7f9fb]">
+        <p className="text-lg font-semibold text-gray-600">Loading station details...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f7f9fb]">
+        <p className="text-lg font-semibold text-red-500">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f7f9fb] text-gray-900">
-      
-
       <main className="mx-auto max-w-7xl px-6 py-10">
         <section className="relative overflow-hidden rounded-3xl shadow-lg">
           <img
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxoYw5NjEDlwwZy6Ptjq-KGeYRqBPoWs2DoF_yieCe4elFSBj0_8rXyTvHrMymAB-JUn_O74odDzN0PleEQCXDLEW8N7x4dipm2Y3gfd3EtrWPqZjE-T9C7cpxnkEJAo0h1u4G68pDVbrwf6nRNgGFhe9OMJstJ70h1tGigHGHcFUVra4NzwaX_1PFPuEQpYjw_6S1dpS6zH6EWdXpncGklAuqrMXe4A5oigesWh1CcwVyTCK366SQkP1ebaan5urFDtHfd8AzGVV3"
+            src={station?.Photo || "https://via.placeholder.com/1200x500"}
             alt=""
             className="h-[500px] w-full object-cover"
           />
 
-          <div className="absolute  bg-gradient-to-t from-black/80 to-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20" />
 
           <div className="absolute bottom-0 left-0 flex w-full flex-col justify-between gap-6 p-8 md:flex-row md:items-end">
             <div>
-              
-
               <h2 className="mt-4 text-5xl font-bold text-white">
-                 Swift Mechanics
+                {station?.name}
               </h2>
 
               <div className="mt-4 flex items-center gap-2 text-yellow-400">
-                
                 <span className="ml-2 text-lg font-semibold text-white">
-                  4.9
+                  {station?.rating}
                 </span>
-                <span className="text-gray-300">(500+ reviews)</span>
+                <span className="text-gray-300">
+                  ({station?.mechanics} mechanics)
+                </span>
               </div>
             </div>
 
-            <button onClick={onnextpage} className="rounded-xl bg-orange-500 px-6 py-4 font-semibold text-white transition hover:scale-105">
+            <button
+              onClick={onnextpage}
+              className="rounded-xl bg-orange-500 px-6 py-4 font-semibold text-white transition hover:scale-105"
+            >
               Book an Appointment
             </button>
           </div>
@@ -101,23 +121,17 @@ const ViewProfile = () => {
           <div className="space-y-10 lg:col-span-8">
             <section className="rounded-3xl border bg-white p-8 shadow-sm">
               <h2 className="text-3xl font-bold text-blue-900">
-                About Swift Mechanics
+                About {station?.name}
               </h2>
 
               <p className="mt-4 text-lg leading-8 text-gray-600">
-                With over 20 years of dedicated service,  Swift Mechanics
-                has established itself as the premier destination for discerning
-                vehicle owners. Specializing in both intricate European
-                engineering and robust domestic vehicles, our master technicians
-                bring a level of technical expertise that ensures your car
-                performs as well as the day it left the showroom.
+                {station?.description}
+              </p>
+
+              <p className="mt-2 text-sm text-gray-500">
+                Owner: {station?.ownername} | Experience: {station?.experienceYear} years
               </p>
             </section>
-
-           
-
-            
-           
 
             <section>
               <h2 className="mb-8 text-3xl font-bold text-blue-900">
@@ -125,7 +139,7 @@ const ViewProfile = () => {
               </h2>
 
               <div className="space-y-5">
-                <div className="rounded-3xl  border-blue-900 bg-white p-6 ">
+                <div className="rounded-3xl border-blue-900 bg-white p-6">
                   <p className="mb-4 text-yellow-500">★★★★★</p>
 
                   <p className="italic text-gray-700">
@@ -138,31 +152,23 @@ const ViewProfile = () => {
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 font-bold text-blue-900">
                       JD
                     </div>
-
                     <span className="font-semibold">James D.</span>
                   </div>
                 </div>
-
-                
               </div>
             </section>
           </div>
 
           <aside className="space-y-6 lg:col-span-4">
-            <div className="sticky  rounded-3xl border bg-white p-8 ">
+            <div className="sticky rounded-3xl border bg-white p-8">
               <h2 className="text-2xl font-bold text-blue-900">
                 Location & Contact
               </h2>
 
-              
-                 
-
-
-
-
               <div className="mt-6 space-y-4 text-gray-700">
-                <p>📍 1234 Mechanics Way, Auto District, CA 94103</p>
-                <p>📞 (555) 012-3456</p>
+                <p>📍 {station?.landmark}, {station?.City}, {station?.State} - {station?.Pincode}</p>
+                <p>📞 {station?.phone}</p>
+                <p>✉️ {station?.email}</p>
               </div>
 
               <hr className="my-8" />
@@ -172,8 +178,6 @@ const ViewProfile = () => {
               </h2>
 
               <div className="mt-5 space-y-3">
-                
-
                 <div className="flex items-center justify-between">
                   <span>Monday-Saturday</span>
                   <span className="font-semibold">9:00 AM - 8:00 PM</span>
@@ -192,7 +196,6 @@ const ViewProfile = () => {
           </aside>
         </div>
       </main>
-
     </div>
   );
 };
